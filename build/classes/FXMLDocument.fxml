@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="451.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
+    <children>
+        <Button fx:id="btnExport" layoutX="52.0" layoutY="344.0" onAction="#handleButtonAction" prefHeight="37.0" prefWidth="109.0" text="Exportar" />
+      <TextField fx:id="txtFile" layoutX="40.0" layoutY="137.0" prefHeight="37.0" prefWidth="505.0" />
+      <Button fx:id="btnSelect" layoutX="557.0" layoutY="137.0" onAction="#newFile" prefHeight="37.0" prefWidth="35.0" text="..." />
+      <Button fx:id="btnExit" layoutX="416.0" layoutY="344.0" onAction="#handleButtonAction" prefHeight="37.0" prefWidth="109.0" text="Salir" />
+      <Label layoutX="238.0" layoutY="46.0" text="Ejercicio">
+         <font>
+            <Font size="40.0" />
+         </font>
+      </Label>
+    </children>
+</AnchorPane>

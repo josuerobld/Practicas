@@ -172,22 +172,7 @@ try {
         }
         
     }
-    
-    
-    public void BuscarCategoria(String Busqueda){
-      
-        //Probar, todavia no funciona
-        for(int i=0;i<Categoria.length;i++){
-            
-            if(Categoria[i].equals(Busqueda)){
-                break; 
-            }else{
-                Categoria[i] = Busqueda;
-            }
-        }
-
-    }
-    
+  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

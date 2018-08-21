@@ -89,6 +89,8 @@ public class HomeController implements Initializable {
 try {
             FileInputStream inputStream = new FileInputStream(new File(rutaArchivoExcel));
             HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
+            String anio = "";
+            String titulo = "";
             
             HSSFSheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
@@ -105,15 +107,47 @@ try {
                 while (cellIterator.hasNext()){
                     celda = cellIterator.next();
                     String resultado ;
+                    String temp;
                     i++;
                     
                     resultado = celda.toString();
                      System.out.println("i:  "+i+"///"+resultado);
-                     //String []  bar = resultado.split("::|\\|");
+                     //String []  bar = resultado.split("::|\\|"); //para remplazar por ! tambien
                      String []  bar = resultado.split("::");
                      
                      for(int j = 0; j<bar.length;j++){
-                         System.out.println("Dato"+j+":              "+bar[j]);
+                         
+                         if(j==0){
+                             
+                             System.out.println("ID:  "+bar[j]);
+                                                          
+                         }else if(j==1){//si es el titulo y si el string contiene (
+                            
+                             if(bar[j].contains("(") == true){
+                                temp = bar[j].replace("(", ":");//si le dejo el ( da error 
+                                String []  split = temp.split(":"); //los separo por :
+                                titulo = split[0]; // para obtener el valor del titulo
+                                titulo = titulo.replace("(","");
+                                titulo = titulo.replace(" ","");
+                                anio = split[1]; //obtengo el segundo valor
+                                anio = anio.replace(")", ""); //lo reemplaso por un valor vacio
+                             }else{
+                                titulo = bar[j].replace(" ","");
+                             }
+                                 
+                            System.out.println("Titulo: "+titulo);//para obtener la fecha
+                            System.out.println("Año: "+anio);//para obtener la fecha
+                            
+                         }else if(j==2){
+                            System.out.println("Categoria: "+bar[j]);//para obtener la fecha
+                         }
+                             
+                                                  
+                    
+                         
+                         
+
+                         
                      }
                      System.out.println(bar + " barr");
                 }

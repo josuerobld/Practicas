@@ -1,4 +1,12 @@
 DB:  OverxakMovies
 User:  practicante
 Pass: Overx@K2018
-Serve: 192.168.101.116
+Server: 192.168.101.116
+
+
+Programas: 
+Xamp
+Mysql WorkBench
+
+http://panamahitek.com/los-7-pasos-seguir-para-el-manejo-de-mysql-con-java/
+

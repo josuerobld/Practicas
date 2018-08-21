@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Ejercicio.jar" size="7262" download="eager" />
+    <jar href="Ejercicio.jar" size="7539" download="eager" />
     <jar href="lib\commons-collections4-4.1.jar" size="751238" download="eager" />
     <jar href="lib\poi-3.17.jar" size="2701171" download="eager" />
     <jar href="lib\poi-ooxml-3.17.jar" size="1479023" download="eager" />

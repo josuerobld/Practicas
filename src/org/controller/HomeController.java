@@ -39,21 +39,34 @@ public class HomeController implements Initializable {
     File selectedFile;
     
     String[] Categoria;
-    String[] DescPelicula = new String[4000];;
-    String[] AnioPelicula = new String[4000];
+    String[] DescPelicula = new String[3883];;
+    String[] AnioPelicula = new String[3883];
     
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
+        
+        txtSalida.setText("******Titulo*******");
+        for(int i=0;i<DescPelicula.length;i++){
+            
+            txtSalida.setText(txtSalida.getText() +"\n" +"Posicion "+i+": "+DescPelicula[i]);
+        }
+        
+        txtSalida.setText(txtSalida.getText() +"\n*******Anio*******");
+        for(int i=0;i<AnioPelicula.length;i++){
+            
+            txtSalida.setText(txtSalida.getText() +"\n" +"Posicion "+i+": "+AnioPelicula[i]);
+        }
 
         
-        try{
+        
+        /*try{
             PreparedStatement procedimiento= conexion.getInstancia().getConexion().prepareCall("{call listarprueba}");
              ResultSet resultado= procedimiento.executeQuery();
              System.out.print(resultado);
         } catch (Exception e){
         }
-
+        */
     }
     
     @FXML
@@ -124,8 +137,9 @@ try {
 
                                 if(bar[j].contains("(") == true){
                                     
-                                    temp = bar[j].replace("(", ":");//si le dejo el ( da error 
-                                    String []  split = temp.split(":"); //los separo por :
+
+                                    temp = bar[j].replace("(", ">");//si le dejo el ( da error 
+                                    String []  split = temp.split(">"); //los separo por :
                                     
                                     anio = split[1]; //obtengo el segundo valor
                                     anio = anio.replace(")", ""); //lo reemplaso por un valor vacio
@@ -143,11 +157,15 @@ try {
 
                                         titulo = split[0] + "("+split[1]; // para obtener el valor del titulo
                                         //titulo = titulo.replace("(","");
-                                        titulo = titulo.replace(":","(");
+                                        titulo = titulo.replace(">","(");
                                     }
                                     
                                 }
 
+                                /*if(cont==289){
+                                    System.out.print("");
+                                    System.out.print("");
+                                }*/
                                 System.out.println("Titulo: "+titulo);//para obtener la fecha
                                 DescPelicula[cont] = titulo;
                                 
@@ -172,7 +190,21 @@ try {
         }
         
     }
+    
   
+    public void BuscarCategoria(String Busqueda){
+      
+        //Probar, todavia no funciona
+        for(int i=0;i<Categoria.length;i++){
+            
+            if(Categoria[i].equals(Busqueda)){
+                break; 
+            }else{
+                Categoria[i] = Busqueda;
+            }
+        }
+     }
+        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

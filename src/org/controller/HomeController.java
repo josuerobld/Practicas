@@ -1,8 +1,5 @@
 package org.controller;
 
-
-
-import org.db.MySQL;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,8 +47,8 @@ public class HomeController implements Initializable {
     
     ArrayList <String> Categoria = new ArrayList <String> ();
     ArrayList <String> DescPelicula = new ArrayList <String> ();
+    ArrayList <String> CatPelicula = new ArrayList <String> ();
     ArrayList <String> AnioPelicula = new ArrayList <String> ();
-    
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -65,6 +62,7 @@ public class HomeController implements Initializable {
         }
     }
     
+    //***************************************************Seleccionar Archivo********************************
     @FXML
     private void newFile(ActionEvent event) {
         
@@ -78,12 +76,10 @@ public class HomeController implements Initializable {
         if(selectedFile != null){
             txtFile.setText(selectedFile.getAbsolutePath());
             btnExport.setDisable(false);
-        }
-       
-       
-        
+        }     
     }
     
+    //*************************************************************Exportar********************************
     @FXML
     private void Export(ActionEvent event) {
         System.out.println(txtFile.getText());
@@ -121,6 +117,7 @@ public class HomeController implements Initializable {
                         System.out.println("***************************************************************************");
                         System.out.println("Cont:   "+cont);
                         System.out.println("Original:   "+resultado);
+                        
                         //String []  bar = resultado.split("::|\\|"); //para remplazar por ! tambien
                         String []  bar = resultado.split("::");
 
@@ -167,6 +164,7 @@ public class HomeController implements Initializable {
                                 System.out.println("Titulo: "+titulo);//para obtener la fecha
                                 DescPelicula.add(titulo);
                                 
+                                
                                 System.out.println("Año: "+anio);//para obtener la fecha
                                 AnioPelicula.add(anio);
                                 
@@ -174,12 +172,17 @@ public class HomeController implements Initializable {
 
                              }else if(j==2){
                                 System.out.println("Categoria: "+bar[j]);//para obtener la fecha
+                                CatPelicula.add(bar[j]);
+                                
                                 bar[j] = bar[j].replace("|", ":");
                                 String [] categoria = bar[j].split(":");
-                                
+                                    
                                 for(int m=0;m<categoria.length;m++){
+                                    
                                     BuscarCategoria(cont,categoria[m]);
+                                    
                                 }
+                                
                              }
                         }
                         
@@ -189,6 +192,10 @@ public class HomeController implements Initializable {
                 }  
                 cont++;
             }
+            
+            
+            InsertCategoriaPelicula();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }  
@@ -214,23 +221,24 @@ public class HomeController implements Initializable {
             //Categoria[id] = null;   
         }else{
             Categoria.add(Busqueda);
+            InsertCategoria(Busqueda);
         }
      }
-        
+      
+        //**************************************************************initialize********************************
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
         btnExport.setDisable(true);
         try {
             // TODO
-
             MySQLConnection("admin", "1234", "prueba");
         } catch (Exception ex) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     } 
 
-    
+    //***********************************************************Base de datos********************************
     
     public void MySQLConnection(String user, String pass, String db_name) throws Exception {
         try {
@@ -238,23 +246,80 @@ public class HomeController implements Initializable {
             Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db_name, user, pass);
             JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         } catch (SQLException ex) {
-            Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }  
 
     public void InsertPelicula(String tittle, String year) {
         try {
-            String Query = "INSERT INTO `pelicula` (`descripcion`,`anio`) VALUES ('"+tittle+"'," + Integer.parseInt(year) + ")";
+            String Query = "INSERT INTO `pelicula` (`descripcion`, `anio`) VALUES (\""+tittle+"\", " + "\"" + year + "\"" + ");";
+            System.out.println(Query);
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
-            JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
         }
     }
+    
+    public void InsertCategoria(String descripcion) {
+        try {
+            String Query = "INSERT INTO `categoria` (`descripcion`) VALUES (\""+descripcion+"\");";
+            System.out.println(Query);
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            
+        }
+    }
+    
+    public void InsertCategoriaPelicula() {
+        try {
+            
+            for(int q=0;q<DescPelicula.size();q++){
+                
+                CatPelicula.get(q).replace("|", ":");
+                String [] categoria = CatPelicula.get(q).split(":");
+                
+                for(int j=0;j<categoria.length;j++){
+                    
+                    String Query = "INSERT INTO `pelicula_categoria` (`id_Pelicula`,`id_Categoria`) "
+                    + "VALUES (\""+ q+1 +"\", " + "\"" + BuscarCat(categoria[j]) + 1 + "\"" + ");";
+                    
+                    System.out.println(Query);
+                    Statement st = Conexion.createStatement();
+                    st.executeUpdate(Query);
+                }
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+
+        }
+    }
+    
+    public int BuscarCat(String descripcion) {
+        
+        int res=0;
+        
+        for(int i=0;i<Categoria.size();i++){
+            
+            
+            if(Categoria.get(i).equals(descripcion)){
+                res = i;
+            }
+        }
+            
+        
+        return res;
+    }
+    
+    
 }
 
 

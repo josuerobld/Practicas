@@ -2,7 +2,7 @@ package org.controller;
 
 
 
-import org.db.conexion;
+import org.db.MySQL;
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,11 +15,19 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.main.Principal;
+import java.util.ArrayList;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.TextArea;
+import javax.swing.JOptionPane;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -30,6 +38,7 @@ import org.apache.poi.ss.usermodel.Row;
 public class HomeController implements Initializable {
     
     private Stage stage;
+    private static Connection Conexion;  
     @FXML private TextField txtFile;
     @FXML private Button btnSelect;
     @FXML private Button btnExport;
@@ -37,36 +46,23 @@ public class HomeController implements Initializable {
     @FXML private TextArea txtSalida;
     FileChooser fileChooser = new FileChooser();
     File selectedFile;
+   
     
-    String[] Categoria;
-    String[] DescPelicula = new String[3883];;
-    String[] AnioPelicula = new String[3883];
+    ArrayList <String> Categoria = new ArrayList <String> ();
+    ArrayList <String> DescPelicula = new ArrayList <String> ();
+    ArrayList <String> AnioPelicula = new ArrayList <String> ();
     
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
         
-        txtSalida.setText("******Titulo*******");
-        for(int i=0;i<DescPelicula.length;i++){
+        try {
             
-            txtSalida.setText(txtSalida.getText() +"\n" +"Posicion "+i+": "+DescPelicula[i]);
-        }
-        
-        txtSalida.setText(txtSalida.getText() +"\n*******Anio*******");
-        for(int i=0;i<AnioPelicula.length;i++){
+            MySQLConnection("admin", "1234", "prueba");
             
-            txtSalida.setText(txtSalida.getText() +"\n" +"Posicion "+i+": "+AnioPelicula[i]);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-
-        
-        
-        /*try{
-            PreparedStatement procedimiento= conexion.getInstancia().getConexion().prepareCall("{call listarprueba}");
-             ResultSet resultado= procedimiento.executeQuery();
-             System.out.print(resultado);
-        } catch (Exception e){
-        }
-        */
     }
     
     @FXML
@@ -94,7 +90,7 @@ public class HomeController implements Initializable {
         String rutaArchivoExcel = txtFile.getText();
         
         
-try {
+        try {
             FileInputStream inputStream = new FileInputStream(new File(rutaArchivoExcel));
             HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
             String anio = "";
@@ -123,6 +119,7 @@ try {
                         
                         resultado = celda.toString();
                         System.out.println("***************************************************************************");
+                        System.out.println("Cont:   "+cont);
                         System.out.println("Original:   "+resultado);
                         //String []  bar = resultado.split("::|\\|"); //para remplazar por ! tambien
                         String []  bar = resultado.split("::");
@@ -162,54 +159,102 @@ try {
                                     
                                 }
 
-                                /*if(cont==289){
+                                if(cont==3881){
                                     System.out.print("");
                                     System.out.print("");
-                                }*/
+                                }
+                                
                                 System.out.println("Titulo: "+titulo);//para obtener la fecha
-                                DescPelicula[cont] = titulo;
+                                DescPelicula.add(titulo);
                                 
                                 System.out.println("Año: "+anio);//para obtener la fecha
-                                AnioPelicula[cont] = anio;
+                                AnioPelicula.add(anio);
+                                
+                                InsertPelicula(DescPelicula.get(cont),AnioPelicula.get(cont));
 
                              }else if(j==2){
                                 System.out.println("Categoria: "+bar[j]);//para obtener la fecha
+                                bar[j] = bar[j].replace("|", ":");
+                                String [] categoria = bar[j].split(":");
                                 
+                                for(int m=0;m<categoria.length;m++){
+                                    BuscarCategoria(cont,categoria[m]);
+                                }
                              }
                         }
                         
                     }else {
-                        
+                        //si hay dos columnas
                     }
-                }
-                
+                }  
                 cont++;
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        
+        }  
     }
     
   
-    public void BuscarCategoria(String Busqueda){
+    public void BuscarCategoria(int id,String Busqueda){
       
+        boolean found = false;
+        
         //Probar, todavia no funciona
-        for(int i=0;i<Categoria.length;i++){
+        for(int i=0;i<Categoria.size();i++){
             
-            if(Categoria[i].equals(Busqueda)){
-                break; 
-            }else{
-                Categoria[i] = Busqueda;
+            if(Categoria.get(i) != null){
+                if(Categoria.get(i).equals(Busqueda)){
+                    found = true;
+                    break;
+                }
             }
+        }
+        
+        if(found){
+            //Categoria[id] = null;   
+        }else{
+            Categoria.add(Busqueda);
         }
      }
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         
         btnExport.setDisable(true);
-    }    
+        try {
+            // TODO
+
+            MySQLConnection("admin", "1234", "prueba");
+        } catch (Exception ex) {
+            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } 
+
     
+    
+    public void MySQLConnection(String user, String pass, String db_name) throws Exception {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db_name, user, pass);
+            JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }  
+
+    public void InsertPelicula(String tittle, String year) {
+        try {
+            String Query = "INSERT INTO `pelicula` (`descripcion`,`anio`) VALUES ('"+tittle+"'," + Integer.parseInt(year) + ")";
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+            JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+    }
 }
+
+

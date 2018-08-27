@@ -81,7 +81,7 @@ public class HomeController implements Initializable {
         
         try {
            
-           if( MySQLConnection("admin", "12234", "prueba")){
+           if( MySQLConnection("admin", "1234", "prueba")){
                
                 btnExport.setDisable(true);
                  txtSalida.appendText(txtSalida.getText()+ "\n" + "Leyendo el archivo de excel...");
@@ -235,8 +235,30 @@ public class HomeController implements Initializable {
                                                      BuscarCategoria(cont,categoria[m]);
 
                                                  }
+                                                                                              
+                                                /*JOptionPane.showMessageDialog(null,"Pelicula: "+DescPelicula.get(cont)+
+                                                "\n" + "Categorias: " + bar[j]);
+                                                
+                                                try {
+                                                    String Query = "SELECT * FROM `pelicula` WHERE `descripcion` = "+"\""+DescPelicula.get(cont)+"\"";
+                                                    System.out.println(Query);
+                                                    Statement st = Conexion.createStatement();
+                                                    java.sql.ResultSet resultSet;
+                                                    resultSet = st.executeQuery(Query);
 
-                                              }
+                                                    while (resultSet.next()) {
+                                                        resultSet.getInt("");
+                                                        System.out.println("ID: " + resultSet.getString("ID") + " "
+                                                                + "Nombre: " + resultSet.getString("Nombre") + " " + resultSet.getString("Apellido") + " "
+                                                                + "Edad: " + resultSet.getString("Edad") + " "
+                                                                + "Sexo: " + resultSet.getString("Sexo"));
+                                                    }
+
+                                                } catch (SQLException ex) {
+                                                    JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+                                                }*/
+                                            }
+
                                          }
 
                                      }else {
@@ -333,7 +355,7 @@ public class HomeController implements Initializable {
 
     public void InsertPelicula(String tittle, String year) {
         try {
-            String Query = "INSERT INTO `pelicula` (`descripcion`, `anio`) VALUES (\""+tittle+"\", " + "\"" + year + "\"" + ");";
+            String Query = "INSERT INTO `pelicula` (`descripcion`, `anio_produccion`) VALUES (\""+tittle+"\", " + "\"" + year + "\"" + ");";
             System.out.println(Query);
             //txtSalida.setText(txtSalida.getText()+ "\n" + Query);
             
@@ -349,7 +371,7 @@ public class HomeController implements Initializable {
     
     public void InsertCategoria(String descripcion) {
         try {
-            String Query = "INSERT INTO `categoria` (`descripcion`) VALUES (\""+descripcion+"\");";
+            String Query = "INSERT INTO `genero` (`descripcion`) VALUES (\""+descripcion+"\");";
             System.out.println(Query);
             //txtSalida.setText(txtSalida.getText()+ "\n" + Query);
             Statement st = Conexion.createStatement();
@@ -384,7 +406,7 @@ public class HomeController implements Initializable {
                 }
                 for(int j=0;j<categoria.length;j++){
                     
-                    String Query = "INSERT INTO `pelicula_categoria` (`id_Pelicula`,`id_Categoria`) "
+                    String Query = "INSERT INTO `pelicula_genero` (`codigo_pelicula`,`codigo_genero`) "
                     + "VALUES (\""+ (q+1) +"\", " + "\"" + (BuscarCat(categoria[j]) + 1 )+ "\"" + ");";
                     
                     System.out.println(Query);

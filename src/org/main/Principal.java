@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -27,8 +28,16 @@ public class Principal extends Application {
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
         this.stage = stage;
+        
+        stage.setOnCloseRequest(evt -> {
+            
+            System.exit(0);
+
+        });
+        
     }
 
     public static Principal getInstancia(){ 

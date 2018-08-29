@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ProgressBar;
@@ -33,6 +34,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class HomeController implements Initializable {
     
+    private long TiempoInicio;
     private Stage stage;
     private static Connection Conexion;  
     @FXML private TextField txtFile;
@@ -52,10 +54,7 @@ public class HomeController implements Initializable {
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        
-
         System.exit(0);
-
     }
     
     //**********************************************************************************Seleccionar Archivo**************************************************************
@@ -63,6 +62,7 @@ public class HomeController implements Initializable {
     private void newFile(ActionEvent event) {
         
         stage = Principal.getInstancia().getStage();
+        
         
         fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx", "*.xls")
@@ -78,22 +78,25 @@ public class HomeController implements Initializable {
     //********************************************************************************Exportar*************************************************************************
     @FXML
     private void Export(ActionEvent event) {
-        
-        try {
+    
+    try {
            
            if( MySQLConnection("admin", "1234", "prueba")){
                
                 btnExport.setDisable(true);
-                 txtSalida.appendText(txtSalida.getText()+ "\n" + "Leyendo el archivo de excel...");
-                 progress.setProgress(0.08);
+
 
                  Thread thread1 = new Thread(){
 
                      public void run(){
 
+                         TiempoInicio = System.currentTimeMillis();
+
+                        txtSalida.appendText( "Leyendo el archivo de excel...");
+                        progress.setProgress(0.13);
+                         
                          System.out.println(txtFile.getText());
                          String rutaArchivoExcel = txtFile.getText();
-
 
                          try {
                              FileInputStream inputStream = new FileInputStream(new File(rutaArchivoExcel));
@@ -103,6 +106,7 @@ public class HomeController implements Initializable {
 
                              HSSFSheet sheet = workbook.getSheetAt(0);
                              Iterator<Row> rowIterator = sheet.iterator();
+
 
                              Row row;
 
@@ -121,7 +125,7 @@ public class HomeController implements Initializable {
                                      String ID = "";
                                      i++;
 
-                                     if(i<=1){
+                                     if(i==1){
 
                                          resultado = celda.toString();
 
@@ -133,12 +137,6 @@ public class HomeController implements Initializable {
                                          //txtSalida.setText(txtSalida.getText()+ "\n" + "Cont:   "+cont);
 
                                          //progress.setProgress(cont/3886);
-                                         if(cont==0){
-                                             txtSalida.appendText(txtSalida.getText()+ "\n" + "Separando los datos");
-                                             progress.setProgress(0.16);
-                                             //txtSalida.setScrollTop(Double.MAX_VALUE);
-
-                                         }
 
 
                                          System.out.println("Original:   "+resultado);
@@ -150,15 +148,16 @@ public class HomeController implements Initializable {
                                          for(int j = 0; j<bar.length;j++){
 
                                              if(j==0){
+                                             
+                                                if(cont==1){
+                                                    txtSalida.appendText(txtSalida.getText()+ "\n" + "Separando los datos");
+                                                     progress.setProgress(0.26);
+                                                     //txtSalida.setScrollTop(Double.MAX_VALUE);
+                                                 }
 
                                                  System.out.println("ID:  "+bar[j]);
                                                  ID = bar[j] ;
                                                 // txtSalida.setText(txtSalida.getText()+ "\n" + "ID:  "+bar[j]);
-                                                
-                                                if(ID.equals("2025")){
-                                                    System.out.print("");
-                                                    System.out.print("");
-                                                }
 
                                              }else if(j==1){//si es el titulo y si el string contiene (
 
@@ -189,25 +188,26 @@ public class HomeController implements Initializable {
 
                                                  }
 
-                                                 if(cont==0){
-                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "Comienzo: Insertar registros de Peliculas y categorias");
-                                                     progress.setProgress(0.24);
+                                                 if(cont==1){
+                                                     //Conexion.setAutoCommit(false);
+                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 1 ha sido guardada correctamente");
+                                                     progress.setProgress(0.39);
                                                      //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if (cont == 1000){
-                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 1000 insertado");
-                                                     progress.setProgress(0.32);
+                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 1000 ha sido guardada correctamente");
+                                                     progress.setProgress(0.52);
                                                      //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if(cont == 2000){
-                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 2000 insertado");
-                                                     progress.setProgress(0.4); 
+                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 2000 ha sido guardada correctamente");
+                                                     progress.setProgress(0.65); 
                                                     // txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if (cont == 3000){
-                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 3000 insertado");
-                                                     progress.setProgress(0.48);
+                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 3000 ha sido guardada correctamente");
+                                                     progress.setProgress(0.78);
                                                     // txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if(cont==3882){
-                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "Fin: Insertar registros de Peliculas y categorias");
-                                                     progress.setProgress(0.56);
+                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 3882 ha sido guardada correctamente");
+                                                     progress.setProgress(0.91);
                                                      //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }
 
@@ -215,24 +215,24 @@ public class HomeController implements Initializable {
                                                 // txtSalida.setText(txtSalida.getText()+ "\n" + "Titulo: "+titulo);
 
 
-                                                 DescPelicula.add(titulo);
+                                                 //DescPelicula.add(titulo);
 
 
                                                  System.out.println("Año: "+anio);//para obtener la fecha
                                                 // txtSalida.setText(txtSalida.getText()+ "\n" + "Año: "+anio);
 
 
-                                                 AnioPelicula.add(anio);
+                                                 //AnioPelicula.add(anio);
                                                  
-                                                    //Conexion.setAutoCommit(false);
-                                                 InsertPelicula(ID,DescPelicula.get(cont),AnioPelicula.get(cont));
+                                                 
+                                                 InsertPelicula(ID,titulo,anio);
 
                                               }else if(j==2){
                                                  System.out.println("Categoria: "+bar[j]);//para obtener la fecha
                                                 // txtSalida.setText(txtSalida.getText()+ "\n" + "Categoria: "+bar[j]);
 
 
-                                                 CatPelicula.add(bar[j]);
+                                                 //CatPelicula.add(bar[j]);
 
                                                  bar[j] = bar[j].replace("|", ":");
                                                  String [] categoria = bar[j].split(":");
@@ -245,7 +245,7 @@ public class HomeController implements Initializable {
                                                                                               
                                                 
                                                 try {
-                                                    String Query = "SELECT * FROM `pelicula` WHERE `descripcion` = "+"\""+DescPelicula.get(cont)+"\"";
+                                                    String Query = "SELECT * FROM `pelicula` WHERE `codigo_pelicula` = "+"\""+ID+"\"";
 
                                                     System.out.println(Query);
                                                     Statement st = Conexion.createStatement();
@@ -253,7 +253,7 @@ public class HomeController implements Initializable {
                                                     resultSet = st.executeQuery(Query);
 
                                                     while (resultSet.next()) {
-                                                        InsertCategoriaPelicula(cont,bar[j],resultSet.getInt("codigo_pelicula") );
+                                                        InsertCategoriaPelicula(bar[j],resultSet.getInt("codigo_pelicula") );
                                                     }
                                                     
 
@@ -273,20 +273,16 @@ public class HomeController implements Initializable {
                                  }  
                                  cont++;
                              }
-                                 //  Conexion.commit();
+                            
+                             //Conexion.commit();
 
-                             txtSalida.appendText(txtSalida.getText()+ "\n" + "Comienzo: Insertar registros en Pelicula_Categoria");
-                             progress.setProgress(0.64);
-                             //txtSalida.setScrollTop(Double.MAX_VALUE);
-                             txtSalida.appendText(txtSalida.getText()+ "\n" + "Fin: Insertar registros en Pelicula_Categoria");
-                             progress.setProgress(0.96);
-                             //txtSalida.setScrollTop(Double.MAX_VALUE);
+
 
                          } catch (Exception e) {
                              e.printStackTrace();
                          }
 
-                         txtSalida.appendText(txtSalida.getText()+ "\n" + "Proceso Terminado");
+                         txtSalida.appendText(txtSalida.getText()+ "\n" + "Proceso Terminado en "+((System.currentTimeMillis() - TiempoInicio)*0.001) + " segundos.");
                          progress.setProgress(1);
                      }
 
@@ -329,13 +325,6 @@ public class HomeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        txtSalida.textProperty().addListener(new ChangeListener<Object>() {
-            @Override
-            public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
-                txtSalida.setScrollTop(Double.MAX_VALUE);
-            }
-        });
-        
         btnExport.setDisable(true);
 
     } 
@@ -360,7 +349,8 @@ public class HomeController implements Initializable {
 
     public void InsertPelicula(String ID, String tittle, String year) {
         try {
-            String Query = "INSERT INTO `pelicula` (`codigo_pelicula`, `descripcion`, `anio_produccion`) VALUES (\""+ID+"\", \""+tittle+"\", " + "\"" + year + "\"" + ");";
+            String Query = "INSERT INTO `pelicula` (`codigo_pelicula`, `descripcion`, `anio_produccion`) "
+            + "VALUES (\""+ID+"\", \""+tittle+"\", " + "\"" + year + "\"" + ");";
             System.out.println(Query);
             //txtSalida.setText(txtSalida.getText()+ "\n" + Query);
             
@@ -388,38 +378,24 @@ public class HomeController implements Initializable {
         }
     }
     
-    public void InsertCategoriaPelicula(int cont, String CategoriaPelicula, int IDPelicula) {
+    public void InsertCategoriaPelicula( String CategoriaPelicula, int IDPelicula) {
         try {
             
-  
-                //String split = CategoriaPelicula.replace("|", ":");
-                String [] categoria = CategoriaPelicula.split(":");
-                
-                if(cont==1000){
-                    txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 1000 insertado");
-                    progress.setProgress(0.72);
-                    //txtSalida.setScrollTop(Double.MAX_VALUE);
-                }else if(cont==2000){
-                    txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 2000 insertado");
-                    progress.setProgress(0.8);
-                    //txtSalida.setScrollTop(Double.MAX_VALUE);
-                }else if(cont==3000){
-                    txtSalida.appendText(txtSalida.getText()+ "\n" + "\t -registro 3000 insertado");
-                    progress.setProgress(0.88);
-                    //txtSalida.setScrollTop(Double.MAX_VALUE);
-                }
-                for(int j=0;j<categoria.length;j++){
-                    
-                    String Query = "INSERT INTO `pelicula_genero` (`codigo_pelicula`,`codigo_genero`) "
-                    + "VALUES (\""+ (IDPelicula) +"\", " + "\"" + (BuscarCat(categoria[j]) )+ "\"" + ");";
-                    
-                    System.out.println(Query);
-                   // txtSalida.setText(txtSalida.getText()+ "\n" + Query);
-                    Statement st = Conexion.createStatement();
-                    st.executeUpdate(Query);
-                    
-                    
-                }
+            //String split = CategoriaPelicula.replace("|", ":");
+            String [] categoria = CategoriaPelicula.split(":");
+
+            for(int j=0;j<categoria.length;j++){
+
+                String Query = "INSERT INTO `pelicula_genero` (`codigo_pelicula`,`codigo_genero`) "
+                + "VALUES (\""+ (IDPelicula) +"\", " + "\"" + (BuscarCat(categoria[j]) )+ "\"" + ");";
+
+                System.out.println(Query);
+               // txtSalida.setText(txtSalida.getText()+ "\n" + Query);
+                Statement st = Conexion.createStatement();
+                st.executeUpdate(Query);
+
+
+            }
                 
  
             

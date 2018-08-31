@@ -78,10 +78,7 @@ public class HomeController implements Initializable {
 
                      public void run(){
 
-                         tiempoInicio = System.currentTimeMillis();
-
-                        txtSalida.appendText( "Leyendo el archivo de excel...");
-                        progress.setProgress(0.13);
+                        tiempoInicio = System.currentTimeMillis();
                          
                          System.out.println(txtFile.getText());
                          String rutaArchivoExcel = txtFile.getText();
@@ -128,9 +125,10 @@ public class HomeController implements Initializable {
 
                                              if(j==0){
                                              
-                                                if(cont==1){
+                                                if(cont==0){
                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "Separando los datos");
                                                      progress.setProgress(0.26);
+
                                                  }
 
                                                  System.out.println("ID:  "+bar[j]);

@@ -10,8 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.main.Principal;
-import java.util.ArrayList;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -19,9 +17,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
-import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javax.swing.JOptionPane;
@@ -34,9 +29,9 @@ import org.apache.poi.ss.usermodel.Row;
 
 public class HomeController implements Initializable {
     
-    private long TiempoInicio;
+    private long tiempoInicio;
     private Stage stage;
-    private static Connection Conexion;  
+    private static Connection conexion;  
     @FXML private TextField txtFile;
     @FXML private Button btnSelect ;
     @FXML private Button btnExport;
@@ -45,12 +40,7 @@ public class HomeController implements Initializable {
     @FXML private TextArea txtSalida;
     FileChooser fileChooser = new FileChooser();
     File selectedFile;
-   
-    
-    ArrayList <String> Categoria = new ArrayList <String> ();
-    ArrayList <String> DescPelicula = new ArrayList <String> ();
-    ArrayList <String> CatPelicula = new ArrayList <String> ();
-    ArrayList <String> AnioPelicula = new ArrayList <String> ();
+
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -62,7 +52,6 @@ public class HomeController implements Initializable {
     private void newFile(ActionEvent event) {
         
         stage = Principal.getInstancia().getStage();
-        
         
         fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("Archivos Excel", "*.xlsx", "*.xls")
@@ -85,12 +74,11 @@ public class HomeController implements Initializable {
                
                 btnExport.setDisable(true);
 
-
                  Thread thread1 = new Thread(){
 
                      public void run(){
 
-                         TiempoInicio = System.currentTimeMillis();
+                         tiempoInicio = System.currentTimeMillis();
 
                         txtSalida.appendText( "Leyendo el archivo de excel...");
                         progress.setProgress(0.13);
@@ -119,30 +107,21 @@ public class HomeController implements Initializable {
 
                                  int i=0;
                                  while (cellIterator.hasNext()){
-                                     celda = cellIterator.next();
-                                     String resultado ;
-                                     String temp;
-                                     String ID = "";
-                                     i++;
+                                    celda = cellIterator.next();
+                                    String resultado ;
+                                    String temp;
+                                    String ID = "";
+                                    i++;
 
                                      if(i==1){
+                                         
 
                                          resultado = celda.toString();
 
 
                                          System.out.println("***************************************************************************");
-                                        //txtSalida.setText(txtSalida.getText()+ "\n" + "*****************************************************************");
-
                                          System.out.println("Cont:   "+cont);
-                                         //txtSalida.setText(txtSalida.getText()+ "\n" + "Cont:   "+cont);
-
-                                         //progress.setProgress(cont/3886);
-
-
                                          System.out.println("Original:   "+resultado);
-                                         //txtSalida.setText(txtSalida.getText()+ "\n" + "Original:   "+resultado);
-
-                                         //String []  bar = resultado.split("::|\\|"); //para remplazar por ! tambien
                                          String []  bar = resultado.split("::");
 
                                          for(int j = 0; j<bar.length;j++){
@@ -152,12 +131,10 @@ public class HomeController implements Initializable {
                                                 if(cont==1){
                                                     txtSalida.appendText(txtSalida.getText()+ "\n" + "Separando los datos");
                                                      progress.setProgress(0.26);
-                                                     //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }
 
                                                  System.out.println("ID:  "+bar[j]);
                                                  ID = bar[j] ;
-                                                // txtSalida.setText(txtSalida.getText()+ "\n" + "ID:  "+bar[j]);
 
                                              }else if(j==1){//si es el titulo y si el string contiene (
 
@@ -182,91 +159,61 @@ public class HomeController implements Initializable {
                                                          titulo = "";
 
                                                          titulo = split[0] + "("+split[1]; // para obtener el valor del titulo
-                                                         //titulo = titulo.replace("(","");
                                                          titulo = titulo.replace(">","(");
                                                      }
 
                                                  }
 
                                                  if(cont==1){
-                                                     //Conexion.setAutoCommit(false);
                                                      txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 1 ha sido guardada correctamente");
                                                      progress.setProgress(0.39);
-                                                     //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if (cont == 1000){
                                                      txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 1000 ha sido guardada correctamente");
                                                      progress.setProgress(0.52);
-                                                     //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if(cont == 2000){
                                                      txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 2000 ha sido guardada correctamente");
                                                      progress.setProgress(0.65); 
-                                                    // txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if (cont == 3000){
                                                      txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 3000 ha sido guardada correctamente");
                                                      progress.setProgress(0.78);
-                                                    // txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }else if(cont==3882){
                                                      txtSalida.appendText(txtSalida.getText()+ "\n" + "La pelicula nuemero 3882 ha sido guardada correctamente");
                                                      progress.setProgress(0.91);
-                                                     //txtSalida.setScrollTop(Double.MAX_VALUE);
                                                  }
 
                                                  System.out.println("Titulo: "+titulo);//para obtener la fecha
-                                                // txtSalida.setText(txtSalida.getText()+ "\n" + "Titulo: "+titulo);
 
-
-                                                 //DescPelicula.add(titulo);
-
-
-                                                 System.out.println("Año: "+anio);//para obtener la fecha
-                                                // txtSalida.setText(txtSalida.getText()+ "\n" + "Año: "+anio);
-
-
-                                                 //AnioPelicula.add(anio);
-                                                 
-                                                 
+                                                 System.out.println("Año: "+anio);//para obtener la fecha                                                                                                 
                                                  InsertPelicula(ID,titulo,anio);
 
                                               }else if(j==2){
                                                  System.out.println("Categoria: "+bar[j]);//para obtener la fecha
-                                                // txtSalida.setText(txtSalida.getText()+ "\n" + "Categoria: "+bar[j]);
-
-
-                                                 //CatPelicula.add(bar[j]);
 
                                                  bar[j] = bar[j].replace("|", ":");
                                                  String [] categoria = bar[j].split(":");
 
                                                  for(int m=0;m<categoria.length;m++){
-
                                                      BuscarCategoria(cont,categoria[m]);
-
-                                                 }
-                                                                                              
+                                                 }                                                                                             
                                                 
                                                 try {
                                                     String Query = "SELECT * FROM `pelicula` WHERE `codigo_pelicula` = "+"\""+ID+"\"";
 
                                                     System.out.println(Query);
-                                                    Statement st = Conexion.createStatement();
+                                                    Statement st = conexion.createStatement();
                                                     java.sql.ResultSet resultSet;
                                                     resultSet = st.executeQuery(Query);
 
                                                     while (resultSet.next()) {
                                                         InsertCategoriaPelicula(bar[j],resultSet.getInt("codigo_pelicula") );
                                                     }
-                                                    
-
-                                                     
-
+                                                                                                         
                                                 } catch (SQLException ex) {
                                                     JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
                                                     ex.printStackTrace();
                                                 }
                                             }
-
                                          }
-
                                      }else {
                                          //si hay dos columnas
                                      }
@@ -282,7 +229,7 @@ public class HomeController implements Initializable {
                              e.printStackTrace();
                          }
 
-                         txtSalida.appendText(txtSalida.getText()+ "\n" + "Proceso Terminado en "+((System.currentTimeMillis() - TiempoInicio)*0.001) + " segundos.");
+                         txtSalida.appendText(txtSalida.getText()+ "\n" + "Proceso Terminado en "+((System.currentTimeMillis() - tiempoInicio)*0.001) + " segundos.");
                          progress.setProgress(1);
                      }
 
@@ -301,13 +248,11 @@ public class HomeController implements Initializable {
   
     public void BuscarCategoria(int id,String Busqueda){
       
-        //boolean found = false;
-        
         try {
             String Query = "SELECT * FROM `genero` WHERE `descripcion` = "+"\""+Busqueda+"\"";
 
             System.out.println(Query);
-            Statement st = Conexion.createStatement();
+            Statement st = conexion.createStatement();
             java.sql.ResultSet resultSet;
             resultSet = st.executeQuery(Query);
 
@@ -335,7 +280,7 @@ public class HomeController implements Initializable {
     public boolean MySQLConnection(String user, String pass, String db_name) throws Exception {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db_name, user, pass);
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db_name, user, pass);
             JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
             return true;
         } catch (ClassNotFoundException ex) {
@@ -349,13 +294,13 @@ public class HomeController implements Initializable {
 
     public void InsertPelicula(String ID, String tittle, String year) {
         try {
+            if(ID.equals("1")){
+                 //Conexion.setAutoCommit(false);
+            }
             String Query = "INSERT INTO `pelicula` (`codigo_pelicula`, `descripcion`, `anio_produccion`) "
             + "VALUES (\""+ID+"\", \""+tittle+"\", " + "\"" + year + "\"" + ");";
             System.out.println(Query);
-            //txtSalida.setText(txtSalida.getText()+ "\n" + Query);
-            
-            
-            Statement st = Conexion.createStatement();
+            Statement st = conexion.createStatement();
             st.executeUpdate(Query);
             
         } catch (SQLException ex) {
@@ -368,20 +313,17 @@ public class HomeController implements Initializable {
         try {
             String Query = "INSERT INTO `genero` (`descripcion`) VALUES (\""+descripcion+"\");";
             System.out.println(Query);
-            //txtSalida.setText(txtSalida.getText()+ "\n" + Query);
-            Statement st = Conexion.createStatement();
+            Statement st = conexion.createStatement();
             st.executeUpdate(Query);
             
         } catch (SQLException ex) {
             ex.printStackTrace();
-            
         }
     }
     
     public void InsertCategoriaPelicula( String CategoriaPelicula, int IDPelicula) {
         try {
             
-            //String split = CategoriaPelicula.replace("|", ":");
             String [] categoria = CategoriaPelicula.split(":");
 
             for(int j=0;j<categoria.length;j++){
@@ -390,18 +332,11 @@ public class HomeController implements Initializable {
                 + "VALUES (\""+ (IDPelicula) +"\", " + "\"" + (BuscarCat(categoria[j]) )+ "\"" + ");";
 
                 System.out.println(Query);
-               // txtSalida.setText(txtSalida.getText()+ "\n" + Query);
-                Statement st = Conexion.createStatement();
+                Statement st = conexion.createStatement();
                 st.executeUpdate(Query);
-
-
             }
-                
- 
-            
         } catch (SQLException ex) {
             ex.printStackTrace();
-
         }
     }
     
@@ -413,21 +348,19 @@ public class HomeController implements Initializable {
             String Query = "SELECT * FROM `genero` WHERE `descripcion` = "+"\""+descripcion+"\"";
 
             System.out.println(Query);
-            Statement st = Conexion.createStatement();
+            Statement st = conexion.createStatement();
             java.sql.ResultSet resultSet;
             resultSet = st.executeQuery(Query);
 
             while (resultSet.next()) {
                 res = resultSet.getInt("codigo_genero");
-            }
-            
+            }            
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
         }
         return res;
     }
-    
     
 }
 
